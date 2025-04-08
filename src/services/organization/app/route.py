@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException
 import json
 import os
-from . import schema
+import schema
 
 router = APIRouter()
 
-with open('../dummy.json', "r") as f:
+with open('dummy.json', "r") as f:
     organizations = json.load(f)
 
 @router.get("/{organization_id}", response_model=schema.OrganizationResponse)

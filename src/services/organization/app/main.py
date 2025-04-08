@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from route import router as organization_route
+import route as organization_route
 
 app = FastAPI(
     title="Organization Service API",
-    version="1.0.0"
+    version="1.0.0",
+    openapi_url='/organization-openapi.json'
 )
 
 app.add_middleware(
@@ -16,7 +17,3 @@ app.add_middleware(
 )
 
 app.include_router(organization_route.router, prefix="/api/v1/organizations", tags=["organizations"])
-
-@app.get("/", tags=["health"])
-def read_root():
-    return {"status": "healthy", "service": "organization-service"}

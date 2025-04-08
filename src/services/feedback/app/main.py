@@ -6,9 +6,10 @@ import models, routes, db as database
 database.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI(
-    title="Comment Service API",
-    description="API for managing organization feedbacks",
-    version="1.0.0"
+    title="Feedback Service API",
+    version="1.0.0",
+    docs_url='/docs',
+    openapi_url='/feedback-openapi.json',
 )
 
 app.add_middleware(
@@ -20,8 +21,3 @@ app.add_middleware(
 )
 
 app.include_router(routes.feedback_router, prefix="/api/v1/organizations", tags=["feedbacks"])
-
-# Root endpoint for health checks
-@app.get("/", tags=["health"])
-def read_root():
-    return {"status": "healthy", "service": "feedback-service"}
