@@ -1,2 +1,1 @@
-from feeback_schema import FeedbackCreate, FeedbackResponse
-from organization_schema import OrganizationCreate, OrganizationResponse
+from .feeback_schema import FeedbackCreate, FeedbackResponse

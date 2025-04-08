@@ -1,9 +1,9 @@
 import os
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from . import models, database, routes
+import models, routes, db as database
 
-models.Base.metadata.create_all(bind=database.engine)
+database.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI(
     title="Comment Service API",
@@ -19,7 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(routes.feedback_router, prefix="/api/v1/feedbacks", tags=["feedbacks"])
+app.include_router(routes.feedback_router, prefix="/api/v1/organizations", tags=["feedbacks"])
 
 # Root endpoint for health checks
 @app.get("/", tags=["health"])

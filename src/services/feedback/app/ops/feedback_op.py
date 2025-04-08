@@ -1,10 +1,12 @@
+import httpx
+import os
+
 from sqlalchemy.orm import Session
 from typing import List
-import httpx
 from fastapi import HTTPException
-from .. import models, schemas
+import models, schemas
 
-ORGANIZATION_SERVICE_URL = "http://organization-service:8000/api/organizations"
+ORGANIZATION_SERVICE_URL = os.environ.get("ORGANIZATION_SERVICE_URL", "http://organization-service:18000/api/v1/organizations")
 
 def verify_organization_exists(organization_id: int):
     with httpx.Client() as client:
