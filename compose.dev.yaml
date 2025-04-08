@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  feedback-service:
+    build:
+      context: ./src/services/feedback
+      dockerfile: Dockerfile
+    container_name: feedback-service
+    ports:
+      - "${FEEDBACK_EXTERNAL_PORT}:${FEEDBACK_SERVICE_PORT}"
+    volumes:
+      - ./src/services/feedback/app:/app
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      - ORGANIZATION_SERVICE_URL=${ORGANIZATION_SERVICE_URL}
+    env_file:
+      - .env
+    depends_on:
+      - feedback-db
+      - organization-service
+    networks:
+      - microservices-network
+
+  feedback-db:
+    image: postgres:13
+    container_name: feedback-db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    env_file:
+      - .env
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - feedback-db-data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  organization-service:
+    build:
+      context: ./src/services/organization
+      dockerfile: Dockerfile.dev
+    container_name: organization-service
+    environment:
+      - ORGANIZATION_EXTERNAL_PORT=${ORGANIZATION_EXTERNAL_PORT}
+      - ORGANIZATION_SERVICE_PORT=${ORGANIZATION_SERVICE_PORT}
+    env_file:
+      - .env
+    ports:
+      - "${ORGANIZATION_EXTERNAL_PORT}:${ORGANIZATION_SERVICE_PORT}"
+    volumes:
+      - ./src/services/organization/app:/app
+      - ./src/services/organization/dummy.json:/app/dummy.json
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    driver: bridge
+
+volumes:
+  feedback-db-data:
