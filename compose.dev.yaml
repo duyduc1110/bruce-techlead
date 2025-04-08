@@ -1,13 +1,28 @@
 version: '3.8'
 
 services:
+  gateway-service:
+    build:
+      context: ./src/gateway
+      dockerfile: Dockerfile.dev
+    container_name: gateway-service
+    ports:
+      - "${GATEWAY_EXTERNAL_PORT}:80"
+    volumes:
+      - ./src/gateway/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - feedback-service
+      - organization-service
+    networks:
+      - microservices-network
+
   feedback-service:
     build:
       context: ./src/services/feedback
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: feedback-service
-    ports:
-      - "${FEEDBACK_EXTERNAL_PORT}:${FEEDBACK_SERVICE_PORT}"
+    # ports:
+    #   - "${FEEDBACK_EXTERNAL_PORT}:${FEEDBACK_SERVICE_PORT}"
     volumes:
       - ./src/services/feedback/app:/app
     environment:
@@ -30,8 +45,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     env_file:
       - .env
-    ports:
-      - "${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}"
+    # ports:
+    #   - "${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}"
     volumes:
       - feedback-db-data:/var/lib/postgresql/data
     networks:
@@ -47,8 +62,8 @@ services:
       - ORGANIZATION_SERVICE_PORT=${ORGANIZATION_SERVICE_PORT}
     env_file:
       - .env
-    ports:
-      - "${ORGANIZATION_EXTERNAL_PORT}:${ORGANIZATION_SERVICE_PORT}"
+    # ports:
+    #   - "${ORGANIZATION_EXTERNAL_PORT}:${ORGANIZATION_SERVICE_PORT}"
     volumes:
       - ./src/services/organization/app:/app
       - ./src/services/organization/dummy.json:/app/dummy.json
