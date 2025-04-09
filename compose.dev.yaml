@@ -24,7 +24,7 @@ services:
     # ports:
     #   - "${FEEDBACK_EXTERNAL_PORT}:${FEEDBACK_SERVICE_PORT}"
     volumes:
-      - ./src/services/feedback/app:/app
+      - ./src/services/feedback:/app
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
       - ORGANIZATION_SERVICE_URL=${ORGANIZATION_SERVICE_URL}

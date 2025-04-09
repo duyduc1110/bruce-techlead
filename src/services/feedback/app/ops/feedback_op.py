@@ -4,7 +4,7 @@ import os
 from sqlalchemy.orm import Session
 from typing import List
 from fastapi import HTTPException
-import models, schemas
+from app import models, schemas
 
 ORGANIZATION_SERVICE_URL = os.environ.get("ORGANIZATION_SERVICE_URL", "http://organization-service:18000/api/v1/organizations")
 

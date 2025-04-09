@@ -70,3 +70,7 @@ Untitled-1.*
 # Azure files
 *.publishsettings
 __azurite_db*
+
+# Pytest folder
+.pytest_cache
+.coverage

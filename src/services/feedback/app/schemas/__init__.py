@@ -1,1 +1,1 @@
-from .feeback_schema import FeedbackCreate, FeedbackResponse
+from .feedback_schema import FeedbackCreate, FeedbackResponse

@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from datetime import datetime
 
 class FeedbackBase(BaseModel):
@@ -11,9 +11,8 @@ class FeedbackCreate(FeedbackBase):
 class FeedbackResponse(FeedbackBase):
     id: int
     organization_id: int
-    is_deleted: bool
     created_at: datetime
     updated_at: Optional[datetime] = None
 
-    class Config:
+    class ConfigDict:
         from_attributes = True

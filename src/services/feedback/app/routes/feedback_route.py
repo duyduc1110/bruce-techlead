@@ -2,11 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from typing import List
-import schemas, ops, db as database
+from app import schemas, ops, db as database
 
 router = APIRouter()
 
-@router.post("/{organization_id}/feedbacks", status_code=status.HTTP_201_CREATED)
+@router.post("/{organization_id}/feedbacks", 
+             status_code=status.HTTP_201_CREATED,
+             response_model=schemas.FeedbackResponse)
 def create_feedback(
     organization_id: int,
     feedback: schemas.FeedbackCreate = None,
@@ -32,7 +34,9 @@ def create_feedback(
     except HTTPException as e:
         return JSONResponse(status_code=e.status_code, content={"detail": e.detail})
 
-@router.get("/{organization_id}/feedbacks", status_code=status.HTTP_200_OK)
+@router.get("/{organization_id}/feedbacks", 
+            status_code=status.HTTP_200_OK,
+            response_model=List[schemas.FeedbackResponse])
 def get_feedbacks(
     organization_id: int,
     db: Session = Depends(database.get_db)

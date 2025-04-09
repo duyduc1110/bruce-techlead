@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  feedback-test:
+    build:
+      context: ./src/services/feedback
+      dockerfile: Dockerfile.test
+    container_name: feedback-test
+    volumes:
+      - ./src/services/feedback:/app
+    environment:
+      DATABASE_URL: "sqlite:///:memory:"
+      ORGANIZATION_SERVICE_URL: http://organization-service:18000/api/v1/organizations

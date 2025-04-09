@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-import models, routes, db as database
+from app import models, routes, db as database
 
 database.Base.metadata.create_all(bind=database.engine)
 
