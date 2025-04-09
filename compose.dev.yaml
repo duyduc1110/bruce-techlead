@@ -21,12 +21,10 @@ services:
       context: ./src/services/feedback
       dockerfile: Dockerfile.dev
     container_name: feedback-service
-    # ports:
-    #   - "${FEEDBACK_EXTERNAL_PORT}:${FEEDBACK_SERVICE_PORT}"
     volumes:
       - ./src/services/feedback:/app
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+      - DATABASE_URL=postgresql://${FEEDBACK_POSTGRES_USER}:${FEEDBACK_POSTGRES_PASSWORD}@${FEEDBACK_DB_HOST}:${FEEDBACK_POSTGRES_PORT}/${FEEDBACK_POSTGRES_DB}
       - ORGANIZATION_SERVICE_URL=${ORGANIZATION_SERVICE_URL}
     env_file:
       - .env
@@ -40,15 +38,45 @@ services:
     image: postgres:13
     container_name: feedback-db
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${FEEDBACK_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${FEEDBACK_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${FEEDBACK_POSTGRES_DB}
     env_file:
       - .env
-    # ports:
-    #   - "${POSTGRES_EXTERNAL_PORT}:${POSTGRES_PORT}"
+    # volumes:
+    #   - feedback-db-data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  member-service:
+    build:
+      context: ./src/services/member
+      dockerfile: Dockerfile.dev
+    container_name: member-service
     volumes:
-      - feedback-db-data:/var/lib/postgresql/data
+      - ./src/services/member:/app
+    environment:
+      - DATABASE_URL=postgresql://${MEMBER_POSTGRES_USER}:${MEMBER_POSTGRES_PASSWORD}@${MEMBER_DB_HOST}:${MEMBER_POSTGRES_PORT}/${MEMBER_POSTGRES_DB}
+      - ORGANIZATION_SERVICE_URL=${ORGANIZATION_SERVICE_URL}
+    env_file:
+      - .env
+    depends_on:
+      - member-db
+      - organization-service
+    networks:
+      - microservices-network
+
+  member-db:
+    image: postgres:13
+    container_name: member-db
+    environment:
+      - POSTGRES_USER=${MEMBER_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${MEMBER_POSTGRES_PASSWORD}
+      - POSTGRES_DB=${MEMBER_POSTGRES_DB}
+    env_file:
+      - .env
+    # volumes:
+    #   - member-db-data:/var/lib/postgresql/data
     networks:
       - microservices-network
 
@@ -58,12 +86,9 @@ services:
       dockerfile: Dockerfile.dev
     container_name: organization-service
     environment:
-      - ORGANIZATION_EXTERNAL_PORT=${ORGANIZATION_EXTERNAL_PORT}
       - ORGANIZATION_SERVICE_PORT=${ORGANIZATION_SERVICE_PORT}
     env_file:
       - .env
-    # ports:
-    #   - "${ORGANIZATION_EXTERNAL_PORT}:${ORGANIZATION_SERVICE_PORT}"
     volumes:
       - ./src/services/organization/app:/app
       - ./src/services/organization/dummy.json:/app/dummy.json
@@ -74,5 +99,6 @@ networks:
   microservices-network:
     driver: bridge
 
-volumes:
-  feedback-db-data:
+# volumes:
+#   feedback-db-data:
+#   member-db-data:
