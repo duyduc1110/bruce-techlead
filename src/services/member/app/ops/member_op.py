@@ -19,32 +19,39 @@ def verify_organization_exists(organization_id: int):
         except httpx.RequestError:
             raise HTTPException(status_code=503, detail="Organization service unavailable")
 
-def create_feedback_db(organization_id: int, feedback_data: schemas.FeedbackCreate, db: Session) -> models.Feedback:
+def create_member_db(organization_id: int, member_data: schemas.MemberCreate, db: Session) -> models.Member:
     verify_organization_exists(organization_id)
     
-    db_feedback = models.Feedback(
+    db_member = models.Member(
         organization_id=organization_id,
-        feedback=feedback_data.feedback
+        first_name=member_data.first_name,
+        last_name=member_data.last_name,
+        login=member_data.login,
+        avatar_url=member_data.avatar_url,
+        followers=member_data.followers,
+        following=member_data.following,
+        title=member_data.title,
+        email=member_data.email,
     )
-    db.add(db_feedback)
+    db.add(db_member)
     db.commit()
-    db.refresh(db_feedback)
-    return db_feedback
+    db.refresh(db_member)
+    return db_member
 
-def get_feedbacks_db(organization_id: int, db: Session) -> List[models.Feedback]:
+def get_member_db(organization_id: int, db: Session) -> List[models.Member]:
     verify_organization_exists(organization_id)
     
-    return db.query(models.Feedback).filter(
-        models.Feedback.organization_id == organization_id,
-        models.Feedback.is_deleted == False
-    ).all()
+    return db.query(models.Member).filter(
+        models.Member.organization_id == organization_id,
+        models.Member.is_deleted == False
+    ).order_by(models.Member.followers.desc()).all()
 
-def delete_all_feedbacks_db(organization_id: int, db: Session) -> None:
+def delete_all_members_db(organization_id: int, db: Session) -> None:
     verify_organization_exists(organization_id)
     
-    feedbacks = db.query(models.Feedback).filter(
-        models.Feedback.organization_id == organization_id,
-        models.Feedback.is_deleted == False
+    feedbacks = db.query(models.Member).filter(
+        models.Member.organization_id == organization_id,
+        models.Member.is_deleted == False
     ).all()
     
     for feedback in feedbacks:

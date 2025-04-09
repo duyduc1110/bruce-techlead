@@ -11,3 +11,14 @@ services:
     environment:
       DATABASE_URL: "sqlite:///:memory:"
       ORGANIZATION_SERVICE_URL: http://organization-service:18000/api/v1/organizations
+
+  member-test:
+    build:
+      context: ./src/services/member
+      dockerfile: Dockerfile.test
+    container_name: member-test
+    volumes:
+      - ./src/services/member:/app
+    environment:
+      DATABASE_URL: "sqlite:///:memory:"
+      ORGANIZATION_SERVICE_URL: http://organization-service:18000/api/v1/organizations

@@ -1,1 +1,1 @@
-from .feedback_schema import FeedbackCreate, FeedbackResponse
+from .member_schema import MemberCreate, MemberResponse

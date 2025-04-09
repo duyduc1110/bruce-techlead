@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from app import models, routes, db as database
+from app import routes, db as database
 
 database.Base.metadata.create_all(bind=database.engine)
 
@@ -20,4 +20,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(routes.feedback_router, prefix="/api/v1/organizations", tags=["feedbacks"])
+app.include_router(routes.member_router, prefix="/api/v1/organizations", tags=["Members"])

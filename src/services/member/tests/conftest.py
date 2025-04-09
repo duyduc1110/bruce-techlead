@@ -37,5 +37,5 @@ def client():
 @pytest.fixture
 def mock_verify_organization():
     """Mock the organization verification function."""
-    with patch('app.ops.feedback_op.verify_organization_exists', return_value=True) as mock:
+    with patch('app.ops.member_op.verify_organization_exists', return_value=True) as mock:
         yield mock

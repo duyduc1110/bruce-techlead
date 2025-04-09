@@ -6,22 +6,29 @@ from app import schemas, ops, db as database
 
 router = APIRouter()
 
-@router.post("/{organization_id}/feedbacks", 
+@router.post("/{organization_id}/members", 
              status_code=status.HTTP_201_CREATED,
-             response_model=schemas.FeedbackResponse)
-def create_feedback(
+             response_model=schemas.MemberResponse)
+def create_member(
     organization_id: int,
-    feedback: schemas.FeedbackCreate = None,
+    member: schemas.MemberCreate = None,
     db: Session = Depends(database.get_db)
 ):
     """
-    Create a new feedback for a specific organization.
+    Create a new member for a specific organization.
     
     ## Path Parameters
-    - **organization_id**: The ID of the organization to create feedback for
+    - **organization_id**: The ID of the organization to create member for
     
     ## Request Body
-    - **feedback**: Feedback content
+    - **first_name**: First name of the member
+    - **last_name**: Last name of the member
+    - **login**: Login name of the member
+    - **avatar_url**: Avatar URL of the member
+    - **followers**: Number of followers
+    - **following**: Number of following
+    - **title**: Title of the member
+    - **email**: Email of the member
     
     ## Responses
     - **201**: Feedback created successfully
@@ -29,42 +36,42 @@ def create_feedback(
     - **503**: Organization service unavailable
     """
     try:
-        result = ops.feedback_op.create_feedback_db(organization_id, feedback, db)
+        result = ops.member_op.create_member_db(organization_id, member, db)
         return result
     except HTTPException as e:
         return JSONResponse(status_code=e.status_code, content={"detail": e.detail})
 
-@router.get("/{organization_id}/feedbacks", 
+@router.get("/{organization_id}/members", 
             status_code=status.HTTP_200_OK,
-            response_model=List[schemas.FeedbackResponse])
-def get_feedbacks(
+            response_model=List[schemas.MemberResponse])
+def get_members(
     organization_id: int,
     db: Session = Depends(database.get_db)
 ):
     """
-    Retrieve all non-deleted feedbacks for a specific organization.
+    Retrieve all non-deleted members for a specific organization.
     
     ## Path Parameters
-    - **organization_id**: The ID of the organization to get feedbacks for
+    - **organization_id**: The ID of the organization to get members
     
     ## Responses
-    - **200**: List of feedbacks returned
+    - **200**: List of members returned
     - **404**: Organization not found
     - **503**: Organization service unavailable
     """
     try:
-        results = ops.feedback_op.get_feedbacks_db(organization_id, db)
+        results = ops.member_op.get_member_db(organization_id, db)
         return results
     except HTTPException as e:
         return JSONResponse(status_code=e.status_code, content={"detail": e.detail})
 
-@router.delete("/{organization_id}/feedbacks", status_code=status.HTTP_200_OK)
-def delete_feedbacks(
+@router.delete("/{organization_id}/members", status_code=status.HTTP_200_OK)
+def delete_members(
     organization_id: int,
     db: Session = Depends(database.get_db)
 ):
     """
-    Soft-delete all feedbacks for a specific organization.
+    Soft-delete all members for a specific organization.
     
     ## Path Parameters
     - **organization_id**: The ID of the organization to delete feedbacks for
@@ -75,7 +82,7 @@ def delete_feedbacks(
     - **503**: Organization service unavailable
     """
     try:
-        ops.feedback_op.delete_all_feedbacks_db(organization_id, db)
+        ops.member_op.delete_all_members_db(organization_id, db)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content={"message": "All feedbacks deleted successfully"}
