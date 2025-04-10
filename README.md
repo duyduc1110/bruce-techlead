@@ -17,7 +17,7 @@ This project implements a microservices architecture with three core services (O
 
 ### Step 1: Environment Configuration
 
-The project uses environment variables defined in the `.env` file. A default configuration is provided, but you can modify it if needed:
+The project uses environment variables defined in the `.env` file in *project root folder*. A default configuration is provided, but you can modify it if needed:
 
 ```bash
 # Feedback Database Config
@@ -146,4 +146,4 @@ You can modify the JSON file if needed
 
 ### Feedback & Member Services
 
-These services are configured to *automatically* seed sample data when they start. This is handled by the `seed_feedbacks()` and `seed_members()` functions that run on service startup.
+These services are configured to **automatically** seed sample data when they start. This is handled by the `seed_feedbacks()` and `seed_members()` functions that run on service startup.
