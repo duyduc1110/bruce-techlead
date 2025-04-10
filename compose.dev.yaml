@@ -12,6 +12,7 @@ services:
       - ./src/gateway/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - feedback-service
+      - member-service
       - organization-service
     networks:
       - microservices-network

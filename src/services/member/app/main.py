@@ -9,7 +9,7 @@ app = FastAPI(
     title="Feedback Service API",
     version="1.0.0",
     docs_url='/docs',
-    openapi_url='/feedback-openapi.json',
+    openapi_url='/member-openapi.json',
 )
 
 app.add_middleware(
